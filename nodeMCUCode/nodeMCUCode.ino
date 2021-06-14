@@ -34,15 +34,25 @@ void mDNSInit() {
   Serial.println("mDNS responder started");
 }
 
+void setCrossOrigin(){
+    server.sendHeader(F("Access-Control-Allow-Origin"), F("*"));
+    server.sendHeader(F("Access-Control-Max-Age"), F("600"));
+    server.sendHeader(F("Access-Control-Allow-Methods"), F("PUT,POST,GET,OPTIONS"));
+    server.sendHeader(F("Access-Control-Allow-Headers"), F("*"));
+};
+
 int receiveAQI() {
   return random(1, 100);
 }
 
 // Serving Hello world
 void getAQI() {
+  setCrossOrigin();
   int aqi = receiveAQI();
   snprintf(com_buf, 32, "{\"aqi\":%d}\r", aqi);
   server.send(200, "text/json", com_buf);
+  Serial.print("Server Sent AQI of: ");
+  Serial.println(aqi); 
 }
 
 
