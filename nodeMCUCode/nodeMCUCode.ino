@@ -13,6 +13,8 @@ const char* password = "9871389389";
 ESP8266WebServer server(80);
 //DNSServer dnsServer;
 
+char com_buf[100];
+
 //void dnsInit() {
 //  dnsServer.setTTL(300);
 //  dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
@@ -32,10 +34,17 @@ void mDNSInit() {
   Serial.println("mDNS responder started");
 }
 
-// Serving Hello world
-void getHelloWord() {
-  server.send(200, "text/json", "{\"name\": \"Hello world\"}");
+int receiveAQI() {
+  return random(1, 100);
 }
+
+// Serving Hello world
+void getAQI() {
+  int aqi = receiveAQI();
+  snprintf(com_buf, 32, "{\"aqi\":%d}\r", aqi);
+  server.send(200, "text/json", com_buf);
+}
+
 
 // Define routing
 void restServerRouting() {
@@ -43,7 +52,7 @@ void restServerRouting() {
     server.send(200, F("text/html"),
                 F("Welcome to the REST Web Server"));
   });
-  server.on(F("/helloWorld"), HTTP_GET, getHelloWord);
+  server.on(F("/helloWorld"), HTTP_GET, getAQI);
 }
 
 // Manage not found URL
@@ -64,7 +73,13 @@ void handleNotFound() {
 
 void setup(void) {
   Serial.begin(115200);
-  //  WiFi.mode(WIFI_AP_STA);
+
+  // WiFiManager
+  WiFiManager wifiManager;
+  //  wifiManager.resetSettings();
+  wifiManager.autoConnect("ESP8266_AP");
+
+  //  WiFi.mode(WIFI_STA);
   //  WiFi.begin(ssid, password);
   //  Serial.println("");
   //
@@ -76,13 +91,8 @@ void setup(void) {
   //  Serial.println("");
   //  Serial.print("Connected to ");
   //  Serial.println(ssid);
-  //  Serial.print("IP address: ");
-  //  Serial.println(WiFi.localIP());
-
-  // WiFiManager
-  WiFiManager wifiManager;
-  wifiManager.resetSettings();
-  wifiManager.autoConnect("ESP8266_AP");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 
   //  dnsInit();
   mDNSInit();
