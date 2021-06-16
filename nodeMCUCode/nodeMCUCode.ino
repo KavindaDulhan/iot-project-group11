@@ -24,12 +24,15 @@ int value = 0;
 char arq_char[100];
 int arq_int;
 
+/*
 bool button_toggle = false;
 bool old_button_toggle = false;
+*/
 
 struct station_config conf;
 char old_ssid[33]; //ssid can be up to 32chars, => plus null term
 char new_ssid[33]; //ssid can be up to 32chars, => plus null term
+
 /*
 StaticJsonDocument<300> JSONbuffer;
 char JSONmessageBuffer[100];
@@ -40,7 +43,13 @@ JSONencoder.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
 */
 
 const int capacity = JSON_OBJECT_SIZE(2);
-StaticJsonDocument<capacity> doc;
+DynamicJsonDocument gps_location(1024);
+
+String inputString = "";         // a String to hold incoming data
+bool stringComplete = false;  // whether the string is complete
+
+String long_val = "80";
+String lat_val = "10";
 
 char com_buf[100];
 
@@ -66,7 +75,7 @@ void setup_wifi() {
   wifi_station_get_config(&conf);
   memcpy(old_ssid, conf.ssid, sizeof(conf.ssid));
   old_ssid[32] = 0; //nullterm in case of 32 char ssid
-  Serial.print ("Old SSID : ");
+  Serial.print ("Old SSID: ");
   Serial.println(String(reinterpret_cast<char*>(old_ssid)));
 
   
@@ -74,22 +83,24 @@ void setup_wifi() {
   WiFiManager wifiManager;
   wifiManager.autoConnect("Select WiFi Access Point");
   delay(1000);
+
+  wifi_station_get_config(&conf);
+  memcpy(new_ssid, conf.ssid, sizeof(conf.ssid));
+  new_ssid[32] = 0; //nullterm in case of 32 char ssid
+  Serial.print ("New SSID: ");
+  Serial.println(String(reinterpret_cast<char*>(new_ssid)));
+  
   WiFi.mode(WIFI_AP_STA);
   //Access point
-  Serial.print("Configuring access point...\n");
+  Serial.print("\nConfiguring access point...\n");
   /* You can remove the password parameter if you want the AP to be open. */
   Serial.println(WiFi.softAP(ssid, password) ? "Access point deployed successfully!" : "Access point deployment failed!");
   
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(myIP);
+  Serial.println();
 
-  
-  wifi_station_get_config(&conf);
-  memcpy(new_ssid, conf.ssid, sizeof(conf.ssid));
-  new_ssid[32] = 0; //nullterm in case of 32 char ssid
-  Serial.print ("New SSID : ");
-  Serial.println(String(reinterpret_cast<char*>(new_ssid)));
   if (String(reinterpret_cast<char*>(old_ssid))!=String(reinterpret_cast<char*>(new_ssid))){
     ESP.reset();
     ESP.restart();
@@ -105,7 +116,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     arq_char[i]=(char)payload[i];
   }
   arq_int = String(arq_char).toInt();
-  Serial.print("ARQ of current location : ");
+  Serial.print("ARQ of current location: ");
   Serial.print(arq_int);
   Serial.println();
   if (arq_int>=50){
@@ -120,7 +131,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
+    Serial.print("Attempting MQTT connection...\n");
     // Create a random client ID
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
@@ -137,6 +148,26 @@ void reconnect() {
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
+    }
+  }
+}
+
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    if (inChar==','){
+      long_val = inputString;
+      inputString = "";
+    }
+    else if (inChar == '\n' && long_val != "") {
+      lat_val = inputString;
+      inputString = "";
+      stringComplete = true;
+    }
+    else{
+      inputString += inChar;
     }
   }
 }
@@ -202,7 +233,7 @@ void handleNotFound() {
 
 void setup(void) {
   Serial.begin(115200);
-
+  
   setup_wifi();
 
   //  dnsInit();
@@ -214,7 +245,7 @@ void setup(void) {
   server.onNotFound(handleNotFound);
   // Start server
   server.begin();
-  Serial.println("HTTP server started");
+  Serial.println("HTTP server started\n");
 
   attachInterrupt(digitalPinToInterrupt(14),button_press,FALLING);  
   pinMode(BUILTIN_LED, OUTPUT); 
@@ -222,6 +253,13 @@ void setup(void) {
     
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+
+  // reserve 50 bytes for the inputString:
+  inputString.reserve(50);
+  
+  gps_location["longtitude"]=long_val;
+  gps_location["latitude"]=lat_val;
+  serializeJson(gps_location , msg);
 }
 
 void loop(void) {
@@ -251,17 +289,26 @@ void loop(void) {
     reconnect();
   }
   client.loop();
-
-  doc["longtitude"]="80";
-  doc["latitude"]="10";
-  serializeJson(doc , msg);
+  
+  // print the string when a newline arrives:
+  if (stringComplete) {
+    Serial.println(inputString);
+    // clear the string:
+    gps_location["longtitude"]=long_val;
+    gps_location["latitude"]=lat_val;
+    serializeJson(gps_location , msg);
+    long_val="";
+    lat_val="";
+    stringComplete = false;
+  }
+  
   unsigned long now = millis();
-  if (now - lastMsg > 60000) {
+  if (now - lastMsg > 15000) {
     lastMsg = now;
     ++value;
     value=String("100").toInt();
     //snprintf (msg, MSG_BUFFER_SIZE, "I am awake");
-    Serial.print("Publish message: ");
+    Serial.print("Current location: ");
     Serial.println(msg);
     client.publish("entc/group11/location",msg);
   }
