@@ -1,0 +1,1 @@
+[{"id":"e79c87a6.8e2428","type":"function","z":"b65858e9.d8f468","name":"","func":"let aqi = msg.payload.data.aqi;\nvar ts = msg.payload.data.time.s;\n\nreturn {payload:{\n    value:aqi,\n    timestamp:ts\n}};","outputs":1,"noerr":0,"initialize":"","finalize":"","libs":[],"x":480,"y":120,"wires":[["de844e77.1d82e"]]}]
