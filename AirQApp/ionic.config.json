@@ -1,7 +1,0 @@
-{
-  "name": "AirQApp",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
