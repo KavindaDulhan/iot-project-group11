@@ -265,5 +265,6 @@ void loop(void) {
     Serial.println(msg);
     client.publish("entc/group11/location",msg);
   }
-    
+
 }
+
