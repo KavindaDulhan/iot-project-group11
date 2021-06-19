@@ -16,6 +16,7 @@ void setup(void)
   initWiFi();
   initMQTT();
   initLocation();
+  initServer();
 }
 
 void loop(void)
@@ -25,6 +26,8 @@ void loop(void)
     reconnectMQTT();
   }
   mqttClient.loop();
+
+  handleServerClients();
 
   getLocation();
   publishLocation();

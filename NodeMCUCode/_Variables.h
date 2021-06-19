@@ -20,8 +20,8 @@ String mqttMsg = "";
 
 // Buffers
 #define BUF_SIZE 50
-char mqtt_buf[BUF_SIZE];
-char server_buf[BUF_SIZE];
+char _mqtt_buf[BUF_SIZE];
+char _server_buf[BUF_SIZE];
 
 // Location
 float latVal;

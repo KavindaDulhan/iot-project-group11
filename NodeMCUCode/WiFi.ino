@@ -24,6 +24,11 @@ void initWiFi()
   Serial.println(WiFi.localIP());
 }
 
+// // WiFiManager
+// WiFiManager wifiManager;
+// //  wifiManager.resetSettings();
+// wifiManager.autoConnect("ESP8266_AP");
+
 // void setup_wifi()
 // {
 

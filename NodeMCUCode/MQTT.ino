@@ -70,8 +70,8 @@ void publishMQTT(char const *topic)
 {
   if (!strcmp(topic, location_topic))
   {
-    locationMsg.toCharArray(mqtt_buf, BUF_SIZE);
-    mqttClient.publish(location_topic, mqtt_buf);
+    locationMsg.toCharArray(_mqtt_buf, BUF_SIZE);
+    mqttClient.publish(location_topic, _mqtt_buf);
   }
 
   Serial.print("MQTT Message Published [");

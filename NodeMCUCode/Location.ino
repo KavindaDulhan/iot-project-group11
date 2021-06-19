@@ -12,6 +12,7 @@ void initLocation()
 // Get location Serial inputs
 void getLocation()
 {
+  // Input pattern: latitude, longitude
   while (Serial.available())
   {
     // Get the new byte
