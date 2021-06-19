@@ -1,3 +1,4 @@
+// Imports
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
@@ -9,6 +10,7 @@
 #include "_Definitions.h"
 #include "_Pins.h"
 
+// Initializations
 void setup(void)
 {
   Serial.begin(BAUD_RATE);
@@ -20,6 +22,7 @@ void setup(void)
   initServer();
 }
 
+// Main code
 void loop(void)
 {
   if (!mqttClient.connected())

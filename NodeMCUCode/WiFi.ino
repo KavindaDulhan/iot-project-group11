@@ -3,6 +3,7 @@ void initWiFi()
 {
   // WiFiManager
   initWiFiManager();
+  delay(1000);
 
   WiFi.mode(WIFI_AP_STA);
   initSoftAP();
