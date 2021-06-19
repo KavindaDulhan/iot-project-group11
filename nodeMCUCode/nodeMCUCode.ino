@@ -7,6 +7,8 @@
 #include <WiFiManager.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 
 const char* ssid = "Air Quality Index";
 const char* password = "12345678";
@@ -52,6 +54,17 @@ String long_val = "80";
 String lat_val = "10";
 
 char com_buf[100];
+
+const long utcOffsetInSeconds = 19800;
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+int time_hour;
+int time_minute;
+int time_second;
+int sleep_time;
+
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
 //void dnsInit() {
 //  dnsServer.setTTL(300);
@@ -191,18 +204,19 @@ void setCrossOrigin(){
     server.sendHeader(F("Access-Control-Allow-Headers"), F("*"));
 };
 
+/*
 int receiveAQI() {
   return random(1, 100);
-}
+}*/
 
 // Serving Hello world
 void getAQI() {
   setCrossOrigin();
-  int aqi = receiveAQI();
-  snprintf(com_buf, 32, "{\"aqi\":%d}\r", aqi);
+  //int aqi = receiveAQI();
+  snprintf(com_buf, 32, "{\"aqi\":%d}\r", aqi_int);
   server.send(200, "text/json", com_buf);
   Serial.print("Server Sent AQI of: ");
-  Serial.println(aqi); 
+  Serial.println(aqi_int); 
 }
 
 
@@ -260,6 +274,8 @@ void setup(void) {
   gps_location["longtitude"]=long_val;
   gps_location["latitude"]=lat_val;
   serializeJson(gps_location , msg);
+
+  timeClient.begin();
 }
 
 void loop(void) {
@@ -301,8 +317,11 @@ void loop(void) {
     lat_val="";
     stringComplete = false;
   }
+
   
   unsigned long now = millis();
+
+
   if (now - lastMsg > 15000) {
     lastMsg = now;
     ++value;
@@ -313,5 +332,15 @@ void loop(void) {
     client.publish("entc/group11/location",msg);
   }
 
-}
+  if (now % 900000 == 0){
+    timeClient.update();
+    time_hour = timeClient.getHours();
+    if (time_hour >=0 || time_hour <=3){
+      time_minute = timeClient.getMinutes();
+      time_second = timeClient.getSeconds();
+      sleep_time = (3-time_hour)*60*60 + (59-time_minute)*60 + (59-time_second);
+      ESP.deepSleep(sleep_time * 1e6); 
+    }
+  }
 
+}
