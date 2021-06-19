@@ -14,6 +14,7 @@ void setup(void)
   Serial.begin(BAUD_RATE);
   initLED();
   initWiFi();
+  initRButton();
   initMQTT();
   initLocation();
   initServer();

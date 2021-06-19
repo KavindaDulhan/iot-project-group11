@@ -13,12 +13,12 @@ void initMDNS()
   Serial.println("mDNS Responder Started");
 }
 
-// Activate a DNS server
-// void dnsInit()
-// {
-//   dnsServer.setTTL(300);
-//   dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
+// Activate the DNS server
+void initDNS()
+{
+  dnsServer.setTTL(300);
+  dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
 
-//   // start DNS server for a specific domain name
-//   dnsServer.start(DNS_PORT, "www.esp8266.local", WiFi.localIP());
-// }
+  // Start DNS server for a specific domain name
+  dnsServer.start(DNS_PORT, "esp8266.local", WiFi.softAPIP());
+}

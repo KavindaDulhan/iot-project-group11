@@ -1,6 +1,15 @@
 // Access point credentials
+const char *config_ssid = "AirQI Config";
+const char *config_password = "12345678";
+
 const char *ssid = "AirQI AP";
 const char *password = "12345678";
+
+// WiFi configs
+// struct station_config conf;
+// ssid can be up to 32chars, => plus null term
+// char old_ssid[33];
+// char new_ssid[33];
 
 // MQTT server
 const char *mqtt_server = "test.mosquitto.org";
@@ -41,6 +50,9 @@ DynamicJsonDocument jsonAQI(1024);
 
 // Time (Location)
 unsigned long preLocMillis = 0;
+
+// WiFi Manager
+WiFiManager wifiManager;
 
 // Web server
 ESP8266WebServer server(80);

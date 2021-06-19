@@ -3,6 +3,7 @@
 void initServer()
 {
   initMDNS();
+  initDNS();
   routeServer();
   server.onNotFound(handleNotFound);
   server.begin();
@@ -22,6 +23,7 @@ void routeServer()
 void handleServerClients()
 {
   MDNS.update();
+  dnsServer.processNextRequest();
   server.handleClient();
 }
 

@@ -14,7 +14,7 @@ void reconnectMQTT()
     String mqttClientId = "ESP8266Client-";
     mqttClientId += String(random(0xffff), HEX);
 
-    Serial.print("Attempting MQTT Connection...\n");
+    Serial.print("Attempting MQTT Connection ...\n");
 
     if (mqttClient.connect(mqttClientId.c_str()))
     {

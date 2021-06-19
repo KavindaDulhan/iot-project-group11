@@ -7,6 +7,9 @@
 // Baud rate
 #define BAUD_RATE 115200
 
+// DNS Port
+#define DNS_PORT 53
+
 // JSON
 #define capacity JSON_OBJECT_SIZE(2)
 
