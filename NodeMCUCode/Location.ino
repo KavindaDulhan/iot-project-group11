@@ -27,7 +27,18 @@ void getLocation()
     {
       assignCoordinate(LONG);
       serialInput = "";
-      parseLocationJSON();
+
+      // Handle invalid inputs
+      if (latVal == 0 || longVal == 0)
+      {
+        Serial.println("Serial Error. Reset !!");
+        resetLocation();
+      }
+      else
+      {
+        Serial.print("Serial Message Received : ");
+        parseLocationJSON();
+      }
     }
     else
     {
@@ -40,17 +51,14 @@ void getLocation()
 void assignCoordinate(int type)
 {
   float serialVal = serialInput.toFloat();
-  if (serialVal != 0)
+  switch (type)
   {
-    switch (type)
-    {
-    case LAT:
-      latVal = serialVal;
-      break;
-    case LONG:
-      longVal = serialVal;
-      break;
-    }
+  case LAT:
+    latVal = serialVal;
+    break;
+  case LONG:
+    longVal = serialVal;
+    break;
   }
 }
 
@@ -75,7 +83,7 @@ void printLocation()
 // Publish location to MQTT
 void publishLocation()
 {
-  if (millis() - preLocMillis > LOC_DELAY)
+  if (!preLocMillis || (millis() - preLocMillis > LOC_DELAY))
   {
     preLocMillis = millis();
     publishMQTT(location_topic);

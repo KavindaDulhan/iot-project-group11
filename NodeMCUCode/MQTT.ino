@@ -18,9 +18,9 @@ void reconnectMQTT()
 
     if (mqttClient.connect(mqttClientId.c_str()))
     {
-      Serial.println("Connected ...");
+      Serial.println("Connected !!");
 
-      mqttClient.publish(hello_topic, "Hello!"); // Publish once
+      mqttClient.publish(hello_topic, "Hello"); // Publish once
 
       mqttClient.subscribe(hello_topic); // Subscribe
       mqttClient.subscribe(AQI_topic);

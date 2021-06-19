@@ -11,12 +11,11 @@
 
 void setup(void)
 {
+  Serial.begin(BAUD_RATE);
   initLED();
-  initLocation();
-
   initWiFi();
   initMQTT();
-  Serial.begin(BAUD_RATE);
+  initLocation();
 }
 
 void loop(void)
