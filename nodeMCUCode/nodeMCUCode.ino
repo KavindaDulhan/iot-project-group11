@@ -20,29 +20,16 @@ const char* mqtt_server = "test.mosquitto.org";
 WiFiClient espClient;
 PubSubClient client(espClient);
 unsigned long lastMsg = 0;
+unsigned long lastMsg2 = 0;
 #define MSG_BUFFER_SIZE  (50)
 char msg[MSG_BUFFER_SIZE];
 int value = 0;
-char arq_char[100];
-int arq_int;
-
-/*
-bool button_toggle = false;
-bool old_button_toggle = false;
-*/
+char aqi_char[100];
+int aqi_int;
 
 struct station_config conf;
 char old_ssid[33]; //ssid can be up to 32chars, => plus null term
 char new_ssid[33]; //ssid can be up to 32chars, => plus null term
-
-/*
-StaticJsonDocument<300> JSONbuffer;
-char JSONmessageBuffer[100];
-JsonObject JSONencoder = JSONbuffer.createObject();
-JSONencoder["longtitude"] = "80";
-JSONencoder["latitude"] = "10";
-JSONencoder.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
-*/
 
 const int capacity = JSON_OBJECT_SIZE(2);
 DynamicJsonDocument gps_location(1024);
@@ -55,24 +42,18 @@ String lat_val = "10";
 
 char com_buf[100];
 
-const long utcOffsetInSeconds = 19800;
+char zone_hour[5];
+char zone_minute[5];
+long utcOffsetInSeconds = 19800;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int time_hour;
 int time_minute;
 int time_second;
-int sleep_time;
+long sleep_time;
 
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
-
-//void dnsInit() {
-//  dnsServer.setTTL(300);
-//  dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
-//  // start DNS server for a specific domain name
-//  dnsServer.start(DNS_PORT, "www.esp8266.local", WiFi.localIP());
-//}
-
 
 ICACHE_RAM_ATTR void button_press(){
  Serial.println("Reconfiguring WiFI..");
@@ -125,18 +106,33 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    arq_char[i]=(char)payload[i];
+
+  if (String(topic) == "entc/group11/aqi"){
+    for (int i = 0; i < length; i++) {
+      aqi_char[i]=(char)payload[i];
+    }
+    aqi_int = String(aqi_char).toInt();
+    Serial.print("ARQ of current location: ");
+    Serial.print(aqi_int);
+    Serial.println();
+    if (aqi_int>=50){
+      digitalWrite(BUILTIN_LED, LOW);
+    }
+    else {
+      digitalWrite(BUILTIN_LED, HIGH);
+    }
   }
-  arq_int = String(arq_char).toInt();
-  Serial.print("ARQ of current location: ");
-  Serial.print(arq_int);
-  Serial.println();
-  if (arq_int>=50){
-    digitalWrite(BUILTIN_LED, LOW);
-  }
-  else {
-    digitalWrite(BUILTIN_LED, HIGH);
+  else if (String(topic) == "entc/group11/project/timezone"){
+    zone_hour[0] = (char)payload[1];
+    zone_hour[1] = (char)payload[2];
+    zone_minute[0] = (char)payload[4];
+    zone_minute[1] = (char)payload[5];
+    if ((char)payload[0]=='+'){
+      utcOffsetInSeconds = (String(zone_hour).toInt())*60*60 + (String(zone_minute).toInt())*60;
+    }
+    else if ((char)payload[0]=='-'){
+      utcOffsetInSeconds = ((String(zone_hour).toInt())*60*60 + (String(zone_minute).toInt())*60)*(-1);
+    }
   }
 
 }
@@ -155,6 +151,7 @@ void reconnect() {
       client.publish("entcgroup11", "hello world");
       // ... and resubscribe
       client.subscribe("entc/group11/aqi");
+      client.subscribe("entc/group11/project/timezone");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -204,16 +201,11 @@ void setCrossOrigin(){
     server.sendHeader(F("Access-Control-Allow-Headers"), F("*"));
 };
 
-/*
-int receiveAQI() {
-  return random(1, 100);
-}*/
-
 // Serving Hello world
 void getAQI() {
   setCrossOrigin();
   //int aqi = receiveAQI();
-  snprintf(com_buf, 32, "{\"aqi\":%d}\r", aqi_int);
+  snprintf(com_buf, 32, "{\"aqi\":%i}\r", aqi_int);
   server.send(200, "text/json", com_buf);
   Serial.print("Server Sent AQI of: ");
   Serial.println(aqi_int); 
@@ -261,7 +253,7 @@ void setup(void) {
   server.begin();
   Serial.println("HTTP server started\n");
 
-  attachInterrupt(digitalPinToInterrupt(14),button_press,FALLING);  
+  attachInterrupt(digitalPinToInterrupt(4),button_press,FALLING);  
   pinMode(BUILTIN_LED, OUTPUT); 
   digitalWrite(BUILTIN_LED, HIGH);
     
@@ -280,24 +272,6 @@ void setup(void) {
 
 void loop(void) {
   //  dnsServer.processNextRequest();
-  
-  /*if (button_toggle != old_button_toggle){
-    reconfig_wifi();
-
-    //  dnsInit();
-    mDNSInit();
-  
-    // Set server routing
-    restServerRouting();
-    // Set not found response
-    server.onNotFound(handleNotFound);
-    // Start server
-    server.begin();
-    Serial.println("HTTP server started");
-
-    old_button_toggle = button_toggle;
-    interrupts();
-    }*/
   MDNS.update();
   server.handleClient();
 
@@ -326,19 +300,24 @@ void loop(void) {
     lastMsg = now;
     ++value;
     value=String("100").toInt();
-    //snprintf (msg, MSG_BUFFER_SIZE, "I am awake");
     Serial.print("Current location: ");
     Serial.println(msg);
     client.publish("entc/group11/location",msg);
   }
 
-  if (now % 900000 == 0){
+  if (now - lastMsg2 > 900000){
+    lastMsg2 = now;
+    NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
     timeClient.update();
     time_hour = timeClient.getHours();
     if (time_hour >=0 || time_hour <=3){
       time_minute = timeClient.getMinutes();
       time_second = timeClient.getSeconds();
       sleep_time = (3-time_hour)*60*60 + (59-time_minute)*60 + (59-time_second);
+      Serial.print ("\nEntering deep sleep mode for ");
+      Serial.print (sleep_time);
+      Serial.println (" seconds");
+      Serial.println ();
       ESP.deepSleep(sleep_time * 1e6); 
     }
   }
