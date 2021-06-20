@@ -3,21 +3,22 @@ void initWiFi()
 {
   saveOldSSID();
 
-  // WiFiManager
+  // WiFi manager
   initWiFiManager();
   delay(5000);
 
+  // Soft AP
   saveNewSSID();
   initSoftAP();
 
-  // Todo: Refactor this
+  // TODO: Refactor this
   if (strcmp(old_ssid, new_ssid))
   {
     ESP.restart();
   }
 }
 
-// Save old SSID #ToDo
+// Save old SSID #TODO
 void saveOldSSID()
 {
   wifi_station_get_config(&conf);
@@ -25,7 +26,7 @@ void saveOldSSID()
   old_ssid[32] = 0; // Nullterm in case of 32 char SSID
 }
 
-// Save new SSID #ToDo
+// Save new SSID #TODO
 void saveNewSSID()
 {
   wifi_station_get_config(&conf);
@@ -33,7 +34,7 @@ void saveNewSSID()
   new_ssid[32] = 0; // Nullterm in case of 32 char SSID
 }
 
-// Initialize WiFi Manager
+// Initialize WiFi manager
 void initWiFiManager()
 {
   wifiManager.setClass("invert");
@@ -73,7 +74,7 @@ ICACHE_RAM_ATTR void pressRButton()
   ESP.restart();
 }
 
-// Deep sleep mode
+// Deep sleep at predefined hours #TEST
 void enterDeepSleep()
 {
   if (millis() - preSleepMillis > DEF_TZ_DELAY)

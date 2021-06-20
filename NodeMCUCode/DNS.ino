@@ -1,7 +1,7 @@
 // Activate mDNS to connect to the server
 void initMDNS()
 {
-  // Local DNS hostname esp8266.local
+  // Local mDNS hostname
   if (!MDNS.begin(mdns_hostname))
   {
     Serial.println("\nError Setting up MDNS Responder!\n");
@@ -13,13 +13,13 @@ void initMDNS()
   Serial.println("\nmDNS Responder Started!\n");
 }
 
-// Activate the DNS server
+// Start DNS server
 void initDNS()
 {
   dnsServer.setTTL(300);
   dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
 
-  // Start DNS server for a specific domain name
+  // DNS hostname
   Serial.print("DNS Server Deployment : ");
   Serial.println(dnsServer.start(DNS_PORT, dns_hostname, WiFi.softAPIP()) ? "Success!" : "Failed!");
   Serial.println();

@@ -31,10 +31,9 @@ String mqttMsg = "";
 char _mqtt_buf[BUF_SIZE];
 char _server_buf[BUF_SIZE];
 
-// WiFi configs
+// WiFi configs #TODO
 struct station_config conf;
-// SSID can be up to 32chars, => plus null term
-char old_ssid[33];
+char old_ssid[33]; // SSID can be up to 32chars, => plus null term
 char new_ssid[33];
 
 // Location
@@ -42,11 +41,6 @@ float latVal;
 float longVal;
 String locationMsg;
 DynamicJsonDocument jsonLocation(1024);
-
-// Predefined locations
-char *loc_array[] = {"Vasai West India", "Bolivei East", "Vile Pale West", "Coloba", "Bandra Mumbai"};
-int lat_array[] = {19.3665, 19.2307, 19.1071, 18.9067, 19.0596};
-int long_array[] = {72.8155, 72.8567, 72.8368, 72.8147, 72.8295};
 
 // AQI
 int AQI;
@@ -60,11 +54,11 @@ int tzMinutes;
 String timeZone;
 long UTCOffset; // In seconds
 
-// Start times
+// Previous times
 unsigned long preLocMillis = 0;
 unsigned long preSleepMillis = 0;
 
-// WiFi Mmnager
+// WiFi manaager
 WiFiManager wifiManager;
 
 // Web server
@@ -74,8 +68,13 @@ ESP8266WebServer server(80);
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
-// DNS Server
+// DNS server
 DNSServer dnsServer;
 
-// UDP Client
+// UDP client
 WiFiUDP ntpUDP;
+
+// Predefined locations
+// char *loc_array[] = {"Vasai West India", "Bolivei East", "Vile Pale West", "Coloba", "Bandra Mumbai"};
+// int lat_array[] = {19.3665, 19.2307, 19.1071, 18.9067, 19.0596};
+// int long_array[] = {72.8155, 72.8567, 72.8368, 72.8147, 72.8295};

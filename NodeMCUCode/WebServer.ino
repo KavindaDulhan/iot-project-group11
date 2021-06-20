@@ -1,4 +1,3 @@
-// Initialize Web Server
 // Initialize the web server
 void initServer()
 {

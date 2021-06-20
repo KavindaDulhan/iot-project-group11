@@ -3,5 +3,5 @@
 #define LED_G_PIN D2
 #define LED_B_PIN D3
 
-// WiFi Reset pin
+// WiFi reset pin
 #define WIFI_R_PIN D8

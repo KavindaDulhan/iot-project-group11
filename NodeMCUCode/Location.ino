@@ -1,4 +1,3 @@
-
 // Initialize location
 void initLocation()
 {

@@ -30,15 +30,7 @@ int updateTimeZone()
   setUTCOffSet();
 }
 
-// Print time zone to Serial monitor
-void printTimeZone()
-{
-  Serial.print("Current Time Zone : ");
-  Serial.print(timeZone);
-  Serial.print(" ");
-  Serial.println(UTCOffset);
-}
-
+// Set UTC offset in seconds
 void setUTCOffSet()
 {
   switch (tzSign)
@@ -51,4 +43,13 @@ void setUTCOffSet()
     break;
   }
   printTimeZone();
+}
+
+// Print time zone to Serial monitor
+void printTimeZone()
+{
+  Serial.print("Current Time Zone : ");
+  Serial.print(timeZone);
+  Serial.print(" ");
+  Serial.println(UTCOffset);
 }
