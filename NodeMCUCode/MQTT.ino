@@ -10,7 +10,7 @@ void reconnectMQTT()
 {
   while (!mqttClient.connected())
   {
-    // Create a random mqttClient ID
+    // Create a random MQTT client ID
     String mqttClientId = "ESP8266Client-";
     mqttClientId += String(random(0xffff), HEX);
 
@@ -25,9 +25,11 @@ void reconnectMQTT()
 
       mqttClient.subscribe(hello_topic); // Subscribe
       mqttClient.subscribe(AQI_topic);
+      mqttClient.subscribe(time_zone_topic);
     }
     else
     {
+      removeAlertLevel();
       Serial.print("Failed!, rc = ");
       Serial.println(mqttClient.state());
       Serial.println("Try Again in 5 Seconds...\n");
@@ -49,6 +51,10 @@ void callbackMQTT(char *topic, byte *payload, unsigned int length)
   if (!strcmp(topic, AQI_topic))
   {
     updateAQI();
+  }
+  else if (!strcmp(topic, time_zone_topic))
+  {
+    updateTimeZone();
   }
   else
   {

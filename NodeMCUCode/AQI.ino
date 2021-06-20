@@ -6,6 +6,7 @@ int updateAQI()
   if (AQI > 0)
   {
     parseAQIJSON();
+    printAQI();
     changeAlertLevel();
   }
   else
@@ -21,14 +22,13 @@ void parseAQIJSON()
 
   AQIMsg = "";
   serializeJson(jsonAQI, AQIMsg);
-  printAQI();
 }
 
 // Print AQI to Serial monitor
 void printAQI()
 {
   Serial.print("Current AQI : ");
-  Serial.println(AQIMsg);
+  Serial.println(AQI);
 }
 
 // Change LED alert color
@@ -46,10 +46,12 @@ void changeAlertLevel()
   {
     LEDColor = RED;
   }
+  adjustLED();
 }
 
 // Remove LED alert color
 void removeAlertLevel()
 {
   LEDColor = WHITE;
+  adjustLED();
 }

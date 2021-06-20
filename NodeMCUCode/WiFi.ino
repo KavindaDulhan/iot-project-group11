@@ -67,25 +67,36 @@ void initRButton()
 // Actions for reset button press
 ICACHE_RAM_ATTR void pressRButton()
 {
-  LEDColor = WHITE;
+  removeAlertLevel();
   Serial.println("\nWiFi Reset Button Pressed\n");
   wifiManager.resetSettings();
   ESP.restart();
 }
 
-//  if (now - lastMsg2 > 900000){
-//     lastMsg2 = now;
-//     NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
-//     timeClient.update();
-//     time_hour = timeClient.getHours();
-//     if (time_hour >=0 || time_hour <=3){
-//       time_minute = timeClient.getMinutes();
-//       time_second = timeClient.getSeconds();
-//       sleep_time = (3-time_hour)*60*60 + (59-time_minute)*60 + (59-time_second);
-//       Serial.print ("\nEntering deep sleep mode for ");
-//       Serial.print (sleep_time);
-//       Serial.println (" seconds");
-//       Serial.println ();
-//       ESP.deepSleep(sleep_time * 1e6);
-//     }
-//   }
+// Deep sleep mode
+void enterDeepSleep()
+{
+  if (millis() - preSleepMillis > DEF_TZ_DELAY)
+  {
+    preSleepMillis = millis();
+
+    NTPClient timeClient(ntpUDP, "pool.ntp.org", UTCOffset);
+
+    timeClient.update();
+    int tHour = timeClient.getHours();
+
+    if (tHour >= START_H || tHour <= WAKE_H)
+    {
+      int tMinute = timeClient.getMinutes();
+      int tSecond = timeClient.getSeconds();
+
+      long sleepTime = (WAKE_H - tHour) * 3600 + (WAKE_H - tMinute) * 60 + (WAKE_S - tSecond);
+
+      Serial.print("\nEntering Deep Sleep Mode for : ");
+      Serial.print(sleepTime);
+      Serial.println(" seconds");
+
+      ESP.deepSleep(sleepTime * 1e6);
+    }
+  }
+}

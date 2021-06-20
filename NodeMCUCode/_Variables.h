@@ -11,6 +11,7 @@ const char *mqtt_server = "test.mosquitto.org";
 const char *hello_topic = "entc/group11/project/hello";
 const char *AQI_topic = "entc/group11/project/aqi";
 const char *location_topic = "entc/group11/project/location";
+const char *time_zone_topic = "entc/group11/project/tz";
 
 // DNS names
 const char *mdns_hostname = "esp8266";
@@ -52,6 +53,13 @@ int AQI;
 String AQIMsg;
 DynamicJsonDocument jsonAQI(1024);
 
+// Time zone
+int tzSign;
+int tzHours;
+int tzMinutes;
+String timeZone;
+long UTCOffset; // In seconds
+
 // Start times
 unsigned long preLocMillis = 0;
 unsigned long preSleepMillis = 0;
@@ -68,3 +76,6 @@ PubSubClient mqttClient(espClient);
 
 // DNS Server
 DNSServer dnsServer;
+
+// UDP Client
+WiFiUDP ntpUDP;

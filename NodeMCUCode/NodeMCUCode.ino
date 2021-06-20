@@ -7,6 +7,7 @@
 #include <PubSubClient.h>
 #include <WiFiManager.h>
 #include <ArduinoJson.h>
+#include <NTPClient.h>
 #include "_Variables.h"
 #include "_Definitions.h"
 #include "_Pins.h"
@@ -20,6 +21,7 @@ void setup(void)
   initRButton();
   initMQTT();
   initLocation();
+  initTimeZone();
   initServer();
 }
 
@@ -39,7 +41,5 @@ void loop(void)
   // Location
   getLocation();
   publishLocation();
-
-  // LED
-  adjustLED();
+  enterDeepSleep();
 }

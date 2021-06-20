@@ -1,23 +1,54 @@
-// else if (String(topic) == "entc/group11/project/timezone"){
-//   zone_hour[0] = (char)payload[1];
-//   zone_hour[1] = (char)payload[2];
-//   zone_minute[0] = (char)payload[4];
-//   zone_minute[1] = (char)payload[5];
-//   if ((char)payload[0]=='+'){
-//     utcOffsetInSeconds = (String(zone_hour).toInt())*60*60 + (String(zone_minute).toInt())*60;
-//   }
-//   else if ((char)payload[0]=='-'){
-//     utcOffsetInSeconds = ((String(zone_hour).toInt())*60*60 + (String(zone_minute).toInt())*60)*(-1);
+// Initialize time zone
+void initTimeZone()
+{
+  // Set defaults
+  tzSign = DEF_TZ_S;
+  tzHours = DEF_TZ_H;
+  tzMinutes = DEF_TZ_M;
 
-//     char zone_hour[5];
-// char zone_minute[5];
-// long utcOffsetInSeconds = 19800;
-// char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-// int time_hour;
-// int time_minute;
-// int time_second;
-// long sleep_time;
+  setUTCOffSet();
+}
 
-// // Define NTP Client to get time
-// WiFiUDP ntpUDP;
-// NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
+// Update time zone from MQTT message
+int updateTimeZone()
+{
+  timeZone = mqttMsg;
+
+  String sign = timeZone.substring(0, 1);
+  tzHours = timeZone.substring(1, 3).toInt();
+  tzMinutes = timeZone.substring(4, 6).toInt();
+
+  if (sign.equals("-"))
+  {
+    tzSign = NEGATIVE;
+  }
+  else
+  {
+    tzSign = POSITIVE;
+  }
+
+  setUTCOffSet();
+}
+
+// Print time zone to Serial monitor
+void printTimeZone()
+{
+  Serial.print("Current Time Zone : ");
+  Serial.print(timeZone);
+  Serial.print(" ");
+  Serial.println(UTCOffset);
+}
+
+void setUTCOffSet()
+{
+  switch (tzSign)
+  {
+  case POSITIVE:
+    UTCOffset = tzHours * 3600 + tzMinutes * 60;
+    break;
+  case NEGATIVE:
+    UTCOffset = -(tzHours * 3600 + tzMinutes * 60);
+    break;
+  }
+  printTimeZone();
+}
