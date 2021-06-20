@@ -86,17 +86,18 @@ void enterDeepSleep()
     timeClient.update();
     int tHour = timeClient.getHours();
 
-    if (tHour >= START_H || tHour <= WAKE_H)
+    if ((tHour >= START_H) && (tHour <= WAKE_H))
     {
       int tMinute = timeClient.getMinutes();
       int tSecond = timeClient.getSeconds();
 
-      long sleepTime = (WAKE_H - tHour) * 3600 + (WAKE_H - tMinute) * 60 + (WAKE_S - tSecond);
+      long sleepTime = (WAKE_H - tHour) * 3600 + (WAKE_M - tMinute) * 60 + (WAKE_S - tSecond);
 
       Serial.print("\nEntering Deep Sleep Mode for : ");
       Serial.print(sleepTime);
       Serial.println(" seconds");
 
+      removeAlertLevel();
       ESP.deepSleep(sleepTime * 1e6);
     }
   }
