@@ -3,8 +3,9 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <DNSServer.h>
-#include <WiFiManager.h>
+#include <WiFiUdp.h>
 #include <PubSubClient.h>
+#include <WiFiManager.h>
 #include <ArduinoJson.h>
 #include "_Variables.h"
 #include "_Definitions.h"
@@ -25,15 +26,20 @@ void setup(void)
 // Main code
 void loop(void)
 {
+  // MQTT
   if (!mqttClient.connected())
   {
     reconnectMQTT();
   }
   mqttClient.loop();
 
+  // Web server
   handleServerClients();
 
+  // Location
   getLocation();
   publishLocation();
+
+  // LED
   adjustLED();
 }

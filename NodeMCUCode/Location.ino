@@ -32,7 +32,12 @@ void getLocation()
       // Handle invalid inputs
       if (latVal == 0 || longVal == 0)
       {
-        Serial.println("Serial Error. Reset !!");
+        Serial.println("Serial Error. Reset!");
+        resetLocation();
+      }
+      else if (latVal > 90 || latVal < -90 || longVal > 180 || longVal < -180)
+      {
+        Serial.println("Invalid Location. Reset!");
         resetLocation();
       }
       else

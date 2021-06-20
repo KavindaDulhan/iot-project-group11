@@ -7,7 +7,7 @@ void initServer()
   routeServer();
   server.onNotFound(handleNotFound);
   server.begin();
-  Serial.println("Web Server Started !!");
+  Serial.println("Web Server Started!\n");
 }
 
 // Define server routing

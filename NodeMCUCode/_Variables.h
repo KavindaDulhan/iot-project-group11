@@ -5,18 +5,16 @@ const char *config_password = "12345678";
 const char *ssid = "AirQI AP";
 const char *password = "12345678";
 
-// WiFi configs
-// struct station_config conf;
-// ssid can be up to 32chars, => plus null term
-// char old_ssid[33];
-// char new_ssid[33];
-
 // MQTT server
 const char *mqtt_server = "test.mosquitto.org";
 
 const char *hello_topic = "entc/group11/project/hello";
 const char *AQI_topic = "entc/group11/project/aqi";
 const char *location_topic = "entc/group11/project/location";
+
+// DNS names
+const char *mdns_hostname = "esp8266";
+const char *dns_hostname = "esp266.local";
 
 // LED color
 unsigned long LEDColor;
@@ -31,6 +29,12 @@ String mqttMsg = "";
 #define BUF_SIZE 50
 char _mqtt_buf[BUF_SIZE];
 char _server_buf[BUF_SIZE];
+
+// WiFi configs
+struct station_config conf;
+// SSID can be up to 32chars, => plus null term
+char old_ssid[33];
+char new_ssid[33];
 
 // Location
 float latVal;
@@ -48,10 +52,11 @@ int AQI;
 String AQIMsg;
 DynamicJsonDocument jsonAQI(1024);
 
-// Time (Location)
+// Start times
 unsigned long preLocMillis = 0;
+unsigned long preSleepMillis = 0;
 
-// WiFi Manager
+// WiFi Mmnager
 WiFiManager wifiManager;
 
 // Web server
@@ -61,4 +66,5 @@ ESP8266WebServer server(80);
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
+// DNS Server
 DNSServer dnsServer;

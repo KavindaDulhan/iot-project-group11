@@ -14,11 +14,12 @@ void reconnectMQTT()
     String mqttClientId = "ESP8266Client-";
     mqttClientId += String(random(0xffff), HEX);
 
-    Serial.print("Attempting MQTT Connection ...\n");
+    Serial.println("Attempting MQTT Connection...");
+    Serial.print("MQTT Connection : ");
 
     if (mqttClient.connect(mqttClientId.c_str()))
     {
-      Serial.println("Connected !!");
+      Serial.println("Success!\n");
 
       mqttClient.publish(hello_topic, "Hello"); // Publish once
 
@@ -27,9 +28,9 @@ void reconnectMQTT()
     }
     else
     {
-      Serial.print("Failed, rc = ");
-      Serial.print(mqttClient.state());
-      Serial.println(" Try Again in 5 Seconds");
+      Serial.print("Failed!, rc = ");
+      Serial.println(mqttClient.state());
+      Serial.println("Try Again in 5 Seconds...\n");
       delay(5000);
     }
   }
