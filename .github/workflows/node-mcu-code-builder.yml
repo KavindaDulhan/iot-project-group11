@@ -4,9 +4,15 @@ name: Node MCU Code Builder
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
+    paths:
+      - "NodeMCUCode/**"
   pull_request:
-    branches: [ main ]
+    branches: 
+      - main
+    paths:
+      - "NodeMCUCode/**"
   workflow_dispatch:
 
 jobs:
@@ -19,15 +25,15 @@ jobs:
       - name: Compile ESP8266 Code
         uses: arduino/compile-sketches@v1
         with:
+          fqbn:  "esp8266:esp8266:nodemcuv2:xtal=80,baud=115200"
           platforms: |
-            - name: "esp8266:esp8266"
+              - name: esp8266:esp8266
+                source-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+                version: latest
           libraries: |
-            - name: ESP8266WiFi
-            - name: ESP8266WebServer
-            - name: ESP8266mDNS
-            - name: DNSServer
-            - name: WiFiUdp
             - name: PubSubClient
             - name: WiFiManager
             - name: ArduinoJson
             - name: NTPClient
+          sketch-paths: "- NodeMCUCode"
+          verbose: true
