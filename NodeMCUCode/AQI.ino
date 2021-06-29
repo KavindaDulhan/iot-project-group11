@@ -1,5 +1,5 @@
 // Update AQI from MQTT message
-int updateAQI()
+void updateAQI()
 {
   AQI = mqttMsg.toInt();
 

@@ -15,7 +15,7 @@ void routeServer()
   server.on("/", HTTP_GET, []()
             { server.send(200, F("text/html"),
                           F("Welcome to the REST Web Server")); });
-  server.on(F("/helloWorld"), HTTP_GET, getAQI);
+  server.on(F("/aqi"), HTTP_GET, getAQI);
 }
 
 // Web client handling
