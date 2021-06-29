@@ -9,7 +9,7 @@ void initLocation()
 }
 
 // Get location Serial inputs
-void getLocation()
+void getLocationSerial()
 {
   // Input pattern: latitude, longitude
   while (Serial.available())
@@ -43,6 +43,7 @@ void getLocation()
       {
         Serial.print("Serial Message Received : ");
         parseLocationJSON();
+        publishLocation();
       }
     }
     else
@@ -85,19 +86,52 @@ void printLocation()
   Serial.println(locationMsg);
 }
 
-// Publish location to MQTT
-void publishLocation()
+// Publish location to MQTT recurrently
+void publishLocationRec()
 {
   if (!preLocMillis || (millis() - preLocMillis > LOC_DELAY))
   {
-    preLocMillis = millis();
-    publishMQTT(location_topic);
-    printLocation();
+    publishLocation();
   }
+}
+
+// Publish location to MQTT
+void publishLocation()
+{
+  preLocMillis = millis();
+  publishMQTT(location_topic);
+  printLocation();
 }
 
 // Reset location to default
 void resetLocation()
 {
   initLocation();
+  publishLocation();
+}
+
+// Change Location for Demo
+void demoLocationChange()
+{
+  if (!preLocMillis || (millis() - preLocMillis > DEMO_LOC_DELAY))
+  {
+    preLocMillis = millis();
+    latVal = lat_array[loc_iter];
+    longVal = long_array[loc_iter];
+
+    if (loc_iter < (NUM_LOC - 1))
+    {
+      loc_iter++;
+    }
+    else
+    {
+      loc_iter = 0;
+    }
+
+    Serial.print("\nTravelled to : ");
+    Serial.println(loc_array[loc_iter]);
+
+    parseLocationJSON();
+    publishLocation();
+  }
 }
