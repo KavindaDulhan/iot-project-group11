@@ -27,7 +27,7 @@ String serialInput = ""; // a String to hold incoming data
 String mqttMsg = "";
 
 // Buffers
-#define BUF_SIZE 50
+#define BUF_SIZE 100
 char _mqtt_buf[BUF_SIZE];
 char _server_buf[BUF_SIZE];
 

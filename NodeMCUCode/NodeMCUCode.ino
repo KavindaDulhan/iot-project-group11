@@ -43,5 +43,5 @@ void loop(void)
   publishLocation();
 
   // Sleep
-  // enterDeepSleep();
+  enterDeepSleep();
 }

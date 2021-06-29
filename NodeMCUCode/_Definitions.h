@@ -13,8 +13,8 @@
 // Default sleep time
 #define START_H 0 // Sleep at 00:00
 #define WAKE_H 3
-#define WAKE_M 30
-#define WAKE_S 0 // Wake up at 03:30
+#define WAKE_M 59
+#define WAKE_S 59 // Wake up at 03:30
 
 // Baud rate
 #define BAUD_RATE 115200

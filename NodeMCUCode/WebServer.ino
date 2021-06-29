@@ -15,7 +15,8 @@ void routeServer()
   server.on("/", HTTP_GET, []()
             { server.send(200, F("text/html"),
                           F("Welcome to the REST Web Server")); });
-  server.on(F("/aqi"), HTTP_GET, getAQI);
+  server.on(F("/aqi"), HTTP_GET, serveAQI);
+  server.on(F("/location"), HTTP_GET, serveLocation);
 }
 
 // Web client handling
@@ -27,13 +28,23 @@ void handleServerClients()
 }
 
 // Serving AQI
-void getAQI()
+void serveAQI()
 {
   setCrossOrigin();
   AQIMsg.toCharArray(_server_buf, BUF_SIZE);
   server.send(200, "text/json", _server_buf);
   Serial.print("Web Server Sent Message : ");
   Serial.println(AQIMsg);
+}
+
+// Serving Location
+void serveLocation()
+{
+  setCrossOrigin();
+  locationMsg.toCharArray(_server_buf, BUF_SIZE);
+  server.send(200, "text/json", _server_buf);
+  Serial.print("Web Server Sent Message : ");
+  Serial.println(locationMsg);
 }
 
 // CORS
