@@ -39,9 +39,9 @@ void loop(void)
   handleServerClients();
 
   // Location
-  // getLocationSerial();
-  // publishLocationRec();
-  demoLocationChange();
+  getLocationSerial();
+  publishLocationRec();
+  // demoLocationChange();
 
   // Sleep
   enterDeepSleep();
