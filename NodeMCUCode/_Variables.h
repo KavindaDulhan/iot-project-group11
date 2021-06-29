@@ -15,7 +15,7 @@ const char *time_zone_topic = "entc/group11/project/tz";
 
 // DNS names
 const char *mdns_hostname = "esp8266";
-const char *dns_hostname = "esp266.local";
+const char *dns_hostname = "esp8266.local";
 
 // LED color
 unsigned long LEDColor;
