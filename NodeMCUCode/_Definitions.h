@@ -35,7 +35,7 @@
 
 // Demo location change
 #define NUM_LOC 6
-#define DEMO_LOC_DELAY 20000 // 20 secs
+#define DEMO_LOC_DELAY 10000 // 10 secs
 
 // Colors
 #define OFF 0x000000
