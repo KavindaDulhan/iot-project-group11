@@ -9,7 +9,7 @@ void initLocation()
 }
 
 // Get location Serial inputs
-void getLocationSerial()
+void getSerialLocation()
 {
   // Input pattern: latitude, longitude
   while (Serial.available())
@@ -87,7 +87,7 @@ void printLocation()
 }
 
 // Publish location to MQTT recurrently
-void publishLocationRec()
+void publishLocationRecur()
 {
   if (!preLocMillis || (millis() - preLocMillis > LOC_DELAY))
   {
