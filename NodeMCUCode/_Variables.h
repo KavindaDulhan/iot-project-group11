@@ -15,7 +15,7 @@ const char *time_zone_topic = "entc/group11/project/tz";
 
 // DNS names
 const char *mdns_hostname = "esp8266";
-const char *dns_hostname = "esp266.local";
+const char *dns_hostname = "esp8266.local";
 
 // LED color
 unsigned long LEDColor;
@@ -27,7 +27,7 @@ String serialInput = ""; // a String to hold incoming data
 String mqttMsg = "";
 
 // Buffers
-#define BUF_SIZE 50
+#define BUF_SIZE 100
 char _mqtt_buf[BUF_SIZE];
 char _server_buf[BUF_SIZE];
 
@@ -74,7 +74,15 @@ DNSServer dnsServer;
 // UDP client
 WiFiUDP ntpUDP;
 
-// Predefined locations
-// char *loc_array[] = {"Vasai West India", "Bolivei East", "Vile Pale West", "Coloba", "Bandra Mumbai"};
-// int lat_array[] = {19.3665, 19.2307, 19.1071, 18.9067, 19.0596};
-// int long_array[] = {72.8155, 72.8567, 72.8368, 72.8147, 72.8295};
+// Demo location change
+int loc_iter = 0;
+
+// American
+const char *loc_array[] = {"San Jose", "San Salvador", "Guatemala City", "Merida", "Veracruz", "Hidalgo"}; // 6
+const float lat_array[] = {9.9347, 13.7151, 14.6069, 20.9732, 18.0056, 20.0066};
+const float long_array[] = {-84.0875, -89.1548, -90.5169, -89.6248, -94.5553, -99.2188};
+
+// Indian
+// char *loc_array[] = {"Vasai West India", "Bolivei East", "Vile Pale West", "Coloba", "Bandra Mumbai"}; // 5
+// float lat_array[] = {19.3665, 19.2307, 19.1071, 18.9067, 19.0596};
+// float long_array[] = {72.8155, 72.8567, 72.8368, 72.8147, 72.8295};

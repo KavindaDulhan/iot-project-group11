@@ -1,5 +1,5 @@
 // Update AQI from MQTT message
-int updateAQI()
+void updateAQI()
 {
   AQI = mqttMsg.toInt();
 
@@ -40,7 +40,7 @@ void changeAlertLevel()
   }
   else if (AQI <= 100)
   {
-    LEDColor = ORANGE;
+    LEDColor = YELLOW;
   }
   else
   {

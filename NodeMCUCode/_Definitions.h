@@ -13,8 +13,8 @@
 // Default sleep time
 #define START_H 0 // Sleep at 00:00
 #define WAKE_H 3
-#define WAKE_M 30
-#define WAKE_S 0 // Wake up at 03:30
+#define WAKE_M 59
+#define WAKE_S 59 // Wake up at 03:59:59
 
 // Baud rate
 #define BAUD_RATE 115200
@@ -32,6 +32,10 @@
 // Signs
 #define POSITIVE 2
 #define NEGATIVE 3
+
+// Demo location change
+#define NUM_LOC 6
+#define DEMO_LOC_DELAY 10000 // 10 secs
 
 // Colors
 #define OFF 0x000000

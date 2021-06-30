@@ -10,7 +10,7 @@ void initTimeZone()
 }
 
 // Update time zone from MQTT message
-int updateTimeZone()
+void updateTimeZone()
 {
   timeZone = mqttMsg;
 

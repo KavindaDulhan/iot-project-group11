@@ -38,13 +38,16 @@ void saveNewSSID()
 void initWiFiManager()
 {
   wifiManager.setClass("invert");
+  //  wifiManager.setConfigPortalTimeout(30);
   wifiManager.autoConnect(config_ssid);
 }
 
 // Initialize soft access point
 void initSoftAP()
 {
+  //  WiFi.persistent(false);
   WiFi.mode(WIFI_AP_STA);
+  delay(1000);
   Serial.println("\nConfiguring Soft AP...");
   Serial.print("Access Point Deployment : ");
   Serial.println(WiFi.softAP(ssid, password) ? "Success!" : "Failed!");
