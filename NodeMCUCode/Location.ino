@@ -149,6 +149,7 @@ void processLocation()
 
   case DEMO_MODE:
     demoLocationChange();
+    break;
   }
 }
 
@@ -160,7 +161,7 @@ void switchLocationMode()
   case NORMAL_MODE:
     removeAlertLevel();
     Serial.println("\nLocation Mode Switch Button Pressed\n");
-    Serial.println("Starting Demo Journey ...");
+    Serial.println("Starting Demo Journey...");
     playHP();
 
     loc_mode = DEMO_MODE;
@@ -168,9 +169,10 @@ void switchLocationMode()
 
   case DEMO_MODE:
     Serial.println("\nLocation Mode Switch Button Pressed\n");
-    Serial.println("Resetting ...");
+    Serial.println("Resetting...");
 
     loc_mode = NORMAL_MODE;
     ESP.reset();
+    break;
   }
 }

@@ -7,7 +7,7 @@
 #define BUZZER_PIN D5
 
 // WiFi reset pin
-#define WIFI_R_PIN S2
+#define WIFI_R_PIN D0
 
 // Location mode pin
 #define LOC_MS_PIN D8
