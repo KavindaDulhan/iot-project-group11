@@ -33,6 +33,10 @@
 #define POSITIVE 2
 #define NEGATIVE 3
 
+// Device modes
+#define NORMAL_MODE 4
+#define DEMO_MODE 5
+
 // Demo location change
 #define NUM_LOC 6
 #define DEMO_LOC_DELAY 10000 // 10 secs
@@ -50,3 +54,33 @@
 #define YELLOW 0xFFFF00
 
 #define ORANGE 0xFF8000
+
+// Musical notes
+#define NOTE_A1 550
+#define NOTE_AS1 582
+#define NOTE_B1 617
+#define NOTE_C1 654
+#define NOTE_CS1 693
+#define NOTE_D1 734
+#define NOTE_DS1 777
+#define NOTE_E1 824
+#define NOTE_F1 873
+#define NOTE_FS1 925
+#define NOTE_G1 980
+#define NOTE_GS1 1003
+#define NOTE_A2 1100
+#define NOTE_AS2 1165
+#define NOTE_B2 1234
+#define NOTE_C2 1308
+#define NOTE_CS2 1385
+#define NOTE_D2 1555
+
+// Tempo
+#define TEMPO 40
+
+// Tone length
+#define L_HALF 5
+#define L_ONE 10
+#define L_ONE_HALF 15
+#define L_TWO 20
+#define L_TWO_HALF 25

@@ -44,6 +44,7 @@ void changeAlertLevel()
   }
   else
   {
+    buzzer(3);
     LEDColor = RED;
   }
   adjustLED();

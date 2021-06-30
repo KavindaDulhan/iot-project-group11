@@ -18,11 +18,12 @@ void setup(void)
   Serial.begin(BAUD_RATE);
   initLED();
   initWiFi();
-  initRButton();
+  initButtons();
   initMQTT();
   initLocation();
   initTimeZone();
   initServer();
+  initBuzzer();
 }
 
 // Main code
@@ -39,9 +40,7 @@ void loop(void)
   handleServerClients();
 
   // Location
-  getSerialLocation();
-  publishLocationRecur();
-  // demoLocationChange();
+  processLocation();
 
   // Sleep
   enterDeepSleep();

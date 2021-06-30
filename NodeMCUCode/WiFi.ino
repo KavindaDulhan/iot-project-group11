@@ -14,7 +14,7 @@ void initWiFi()
   // TODO: Refactor this
   if (strcmp(old_ssid, new_ssid))
   {
-    ESP.restart();
+    ESP.reset();
   }
 }
 
@@ -47,7 +47,6 @@ void initSoftAP()
 {
   //  WiFi.persistent(false);
   WiFi.mode(WIFI_AP_STA);
-  delay(1000);
   Serial.println("\nConfiguring Soft AP...");
   Serial.print("Access Point Deployment : ");
   Serial.println(WiFi.softAP(ssid, password) ? "Success!" : "Failed!");
@@ -62,19 +61,13 @@ void initSoftAP()
   Serial.println();
 }
 
-// Attach interrupt to reset button
-void initRButton()
-{
-  attachInterrupt(digitalPinToInterrupt(WIFI_R_PIN), pressRButton, FALLING);
-}
-
-// Actions for reset button press
-ICACHE_RAM_ATTR void pressRButton()
+// Reset WiFi settings
+void wifiReset()
 {
   removeAlertLevel();
   Serial.println("\nWiFi Reset Button Pressed\n");
   wifiManager.resetSettings();
-  ESP.restart();
+  ESP.reset();
 }
 
 // Deep sleep at predefined hours #TEST
