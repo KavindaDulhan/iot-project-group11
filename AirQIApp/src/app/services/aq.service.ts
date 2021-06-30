@@ -5,12 +5,16 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class AQService {
-    private ESP8266_SERVER = "http://192.168.8.105"
+    private ESP8266_SERVER = "http://esp8266.local"
 
     constructor(private http: HttpClient) { }
 
     getAQI() {
-        return this.http.get(this.ESP8266_SERVER + "/helloWorld");
+        return this.http.get(this.ESP8266_SERVER + "/aqi");
+    }
+
+    getLocation() {
+        return this.http.get(this.ESP8266_SERVER + "/location")
     }
 
 }
