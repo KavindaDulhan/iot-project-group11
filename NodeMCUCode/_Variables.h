@@ -37,6 +37,7 @@ char old_ssid[33]; // SSID can be up to 32chars, => plus null term
 char new_ssid[33];
 
 // Location
+int loc_mode;
 float latVal;
 float longVal;
 String locationMsg;

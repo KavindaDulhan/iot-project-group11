@@ -4,6 +4,7 @@ void initLocation()
   // Set defaults
   latVal = DEF_LAT;
   longVal = DEF_LONG;
+  loc_mode = NORMAL_MODE;
 
   parseLocationJSON();
 }
@@ -133,5 +134,45 @@ void demoLocationChange()
 
     parseLocationJSON();
     publishLocation();
+  }
+}
+
+// Process location data
+void processLocation()
+{
+  switch (loc_mode)
+  {
+  case NORMAL_MODE:
+    getSerialLocation();
+    publishLocationRecur();
+    break;
+
+  case DEMO_MODE:
+    demoLocationChange();
+    break;
+  }
+}
+
+// Switch location mode
+void switchLocationMode()
+{
+  switch (loc_mode)
+  {
+  case NORMAL_MODE:
+    removeAlertLevel();
+    Serial.println("\nLocation Mode Switch Button Pressed\n");
+    Serial.println("Starting Demo Journey...");
+    playHP();
+
+    loc_mode = DEMO_MODE;
+    break;
+
+  case DEMO_MODE:
+    Serial.println("\nLocation Mode Switch Button Pressed\n");
+    Serial.println("Resetting...");
+
+    loc_mode = NORMAL_MODE;
+    ESP.reset();
+    break;
   }
 }
